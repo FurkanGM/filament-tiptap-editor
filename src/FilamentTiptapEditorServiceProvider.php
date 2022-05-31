@@ -34,5 +34,7 @@ class FilamentTiptapEditorServiceProvider extends PluginServiceProvider
         Livewire::component('filament-tiptap-editor-link-modal', Components\LinkModal::class);
         Livewire::component('filament-tiptap-editor-embed-modal', Components\EmbedModal::class);
         Livewire::component('filament-tiptap-editor-source-modal', Components\SourceModal::class);
+        Livewire::component('filament-tiptap-editor-blocks-button', Components\BlocksButton::class);
+        Livewire::component('filament-tiptap-editor-block-modal', Components\BlockModal::class);
     }
 }

@@ -7,12 +7,12 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Filament\Forms\Components\Field;
 use Filament\Forms\ComponentContainer;
-use Filament\Forms\Components\Builder\Block;
 use Filament\Forms\Components\Concerns\HasPlaceholder;
 use Filament\Support\Concerns\HasExtraAlpineAttributes;
 use Filament\Forms\Components\Concerns\CanBeLengthConstrained;
 use Filament\Forms\Components\Concerns\HasExtraInputAttributes;
 use Filament\Forms\Components\Contracts\CanBeLengthConstrained as CanBeLengthConstrainedContract;
+use FilamentTiptapEditor\Components\Block;
 
 class TiptapEditor extends Field implements CanBeLengthConstrainedContract
 {
@@ -26,6 +26,8 @@ class TiptapEditor extends Field implements CanBeLengthConstrainedContract
 
     public string $profile = 'default';
 
+    public ?array $blocks = [];
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -36,6 +38,13 @@ class TiptapEditor extends Field implements CanBeLengthConstrainedContract
     public function profile(?string $profile)
     {
         $this->profile = collect(config('filament-tiptap-editor.profiles.' . $profile))->implode(',');
+
+        return $this;
+    }
+
+    public function blocks(?array $blocks = [])
+    {
+        $this->blocks = $blocks;
 
         return $this;
     }
@@ -93,5 +102,15 @@ class TiptapEditor extends Field implements CanBeLengthConstrainedContract
     public function getButtons()
     {
         return $this->profile;
+    }
+
+    public function hasBlocks()
+    {
+        return $this->blocks ? 'true' : 'false';
+    }
+
+    public function getBlocks()
+    {
+        return $this->blocks;
     }
 }

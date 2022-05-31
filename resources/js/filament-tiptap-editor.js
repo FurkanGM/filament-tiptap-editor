@@ -46,7 +46,7 @@ function randomString(length) {
 document.addEventListener("alpine:init", () => {
   let editors = window.filamentTiptapEditors || {};
 
-  Alpine.data("tiptap", ({ state, buttons = "", blocks = [] }) => {
+  Alpine.data("tiptap", ({ state, buttons = "", blocks = false }) => {
     return {
       id: null,
       buttons: buttons.split(","),

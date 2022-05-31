@@ -22,7 +22,7 @@
         <div wire:ignore
             class="relative z-0 tiptap-wrapper"
             x-bind:class="{ 'tiptap-fullscreen': fullScreenMode }"
-            x-data="tiptap({ state: $wire.entangle('{{ $getStatePath() }}').defer, buttons: '{{ $getButtons() }}' })"
+            x-data="tiptap({ state: $wire.entangle('{{ $getStatePath() }}').defer, buttons: '{{ $getButtons() }}', blocks: {{ $hasBlocks() }} })"
             x-on:keydown.escape="fullScreenMode = false"
             x-id="['dropdown-button']">
             <div @class([
@@ -148,6 +148,11 @@
                         style="display: none;">
                         <x-filament-tiptap-editor::buttons.source fieldId="{{ $getStatePath() }}" />
                     </div>
+                    <div x-show="blocks"
+                        style="display: none;">
+                        <livewire:filament-tiptap-editor-blocks-button fieldId="{{ $getStatePath() }}"
+                            :blocks="$getBlocks()" />
+                    </div>
                     <div x-show="buttons.includes('color')"
                         style="display: none;">
                         <x-filament-tiptap-editor::buttons.remove-color />
@@ -190,6 +195,9 @@
             @livewire('filament-tiptap-editor-link-modal')
             {{-- @livewire('filament-tiptap-editor-embed-modal') --}}
             @livewire('filament-tiptap-editor-source-modal')
+            @if ($hasBlocks())
+                @livewire('filament-tiptap-editor-block-modal')
+            @endif
         @endpush
     @endonce
 </x-forms::field-wrapper>
