@@ -5,7 +5,11 @@
     x-data="{
         toggleOpen(event) {
             $wire.set('fieldId', event.detail.fieldId);
-            $wire.getBlock(event.detail.block.name);
+            if (event.detail.action !== 'edit') {
+                $wire.setBlock(event.detail.type);
+            } else {
+                $wire.editBlock(event.detail.type, event.detail.data);
+            }
             this.$nextTick(() => {
                 if (this.isOpen === true && this.$el.querySelector('input')) {
                     this.$el.querySelector('input').focus();
@@ -13,14 +17,13 @@
             });
         }
     }"
-    x-on:close-modal.window="toggleOpen($event)"
     x-on:open-modal.window="toggleOpen($event)"
     class="filament-tiptap-editor-block-modal">
 
-    {{ $data }}
-
-    {{-- <form wire:submit.prevent="create">
-        {{ $this->form }}
+    <form wire:submit.prevent="create">
+        <div>
+            {{ $this->{$currentForm} }}
+        </div>
 
         <div class="flex items-center gap-4 pt-3 mt-3 border-t border-gray-300 dark:border-gray-700">
             <div class="flex items-center gap-2 ml-auto">
@@ -34,6 +37,6 @@
                 </x-filament::button>
             </div>
         </div>
-    </form> --}}
+    </form>
 
 </x-filament-support::modal>

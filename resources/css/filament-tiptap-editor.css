@@ -372,3 +372,24 @@
 .filament-tiptap-editor-source-modal textarea {
   font-family: theme("fontFamily.mono");
 }
+
+.filament-block {
+  .filament-block-title {
+    background-color: theme("colors.gray.200");
+    color: theme("colors.gray.900");
+    border-radius: 0.25rem 0.25rem 0 0;
+    padding-inline: 0.75rem;
+    padding-block: 0.5rem;
+    text-transform: uppercase;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .filament-block-content {
+    background-color: theme("colors.gray.100");
+    border-radius: 0 0 0.25rem 0.25rem;
+    padding: 1rem;
+  }
+}

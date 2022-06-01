@@ -16,12 +16,24 @@
 
         focusAfter && focusAfter.focus()
     },
-    insertBlock() {
-        return;
+    openModal(type) {
+        $dispatch('open-modal', {
+            id: 'filament-tiptap-editor-block-modal',
+            fieldId: '{{ $fieldId }}',
+            type: type
+        });
+    },
+    insertBlock(data) {
+        this.editor()
+            .chain()
+            .focus()
+            .setBlock({ data })
+            .run();
     }
 }"
     x-on:keydown.escape.prevent.stop="close($refs.button)"
     x-id="['dropdown-button']"
+    x-on:insert-block.window="$event.detail.fieldId === '{{ $fieldId }}' ? insertBlock($event.detail.data) : null"
     class="relative flex flex-col items-center">
     <button type="button"
         x-ref="button"
@@ -29,7 +41,7 @@
         :aria-expanded="open"
         :aria-controls="$id('dropdown-button')"
         :class="{ 'active': open }"
-        x-tooltip="'Table'">
+        x-tooltip="'Blocks'">
         <svg xmlns="http://www.w3.org/2000/svg"
             xmlns:xlink="http://www.w3.org/1999/xlink"
             aria-hidden="true"
@@ -45,7 +57,7 @@
             <path fill="none"
                 d="M0 0h36v36H0z"></path>
         </svg>
-        <span class="sr-only">Table</span>
+        <span class="sr-only">Blocks</span>
     </button>
 
     <div x-ref="panel"
@@ -57,11 +69,12 @@
         class="absolute z-30 h-48 overflow-y-scroll text-white bg-gray-900 rounded-md shadow-md top-full"
         style="display: none;">
         <ul class="text-sm divide-y divide-gray-700 min-w-[144px]">
-            @foreach ($blockLabels as $block)
+            @foreach (config('filament-tiptap-editor.blocks') as $block)
+                @php $block = new $block() @endphp
                 <li>
                     <button type="button"
-                        wire:click.prevent="getBlock('{{ $block['resolve'] }}')"
-                        class="block w-full px-3 py-2 text-left whitespace-nowrap hover:bg-primary-500 focus:bg-primary-500 rounded-t-md">{{ $block['label'] }}</button>
+                        x-on:click="openModal('{{ $block->getName() }}')"
+                        class="block w-full px-3 py-2 text-left whitespace-nowrap hover:bg-primary-500 focus:bg-primary-500 rounded-t-md">{{ (new $block())->getLabel() }}</button>
                 </li>
             @endforeach
         </ul>

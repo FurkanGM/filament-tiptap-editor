@@ -26,7 +26,7 @@ class TiptapEditor extends Field implements CanBeLengthConstrainedContract
 
     public string $profile = 'default';
 
-    public ?array $blocks = [];
+    public array $blocks = [];
 
     protected function setUp(): void
     {

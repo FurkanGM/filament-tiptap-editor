@@ -26,7 +26,7 @@ import TextStyle from "@tiptap/extension-text-style";
 import Code from "@tiptap/extension-code";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import TextAlign from "@tiptap/extension-text-align";
-import { CheckedList, Lead, CustomLink, CustomImage, CustomParagraph } from "./extensions";
+import { CheckedList, Lead, CustomLink, CustomImage, CustomParagraph, FilamentBlock } from "./extensions";
 import { lowlight } from "lowlight/lib/common";
 
 function randomString(length) {
@@ -125,11 +125,16 @@ document.addEventListener("alpine:init", () => {
           exts.push(Heading.configure({ levels }));
         }
 
+        if (blocks) {
+          exts.push(FilamentBlock);
+        }
+
         return exts;
       },
       init() {
         this.id = randomString(8);
         let _this = this;
+        let initialContent = "";
         editors[this.id] = new Editor({
           element: this.$refs.element,
           extensions: this.getExtensions(),

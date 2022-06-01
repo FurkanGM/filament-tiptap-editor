@@ -4,3 +4,4 @@ export { default as IFrame } from "./IFrame";
 export { CustomLink } from "./Link";
 export { CustomImage } from "./Image";
 export { CustomParagraph } from "./Paragraph";
+export { default as FilamentBlock } from "./FilamentBlock";

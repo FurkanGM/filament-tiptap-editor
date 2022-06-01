@@ -15294,6 +15294,119 @@ var CheckedList = _tiptap_core__WEBPACK_IMPORTED_MODULE_0__.Node.create({
 
 /***/ }),
 
+/***/ "./resources/js/extensions/FilamentBlock.js":
+/*!**************************************************!*\
+  !*** ./resources/js/extensions/FilamentBlock.js ***!
+  \**************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _tiptap_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @tiptap/core */ "./node_modules/@tiptap/core/dist/tiptap-core.esm.js");
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+
+var FilamentBlock = _tiptap_core__WEBPACK_IMPORTED_MODULE_0__.Node.create({
+  name: "filament_block",
+  group: "block",
+  atom: true,
+  draggable: true,
+  addOptions: function addOptions() {
+    return {
+      HTMLAttributes: {
+        "class": "filament-block"
+      }
+    };
+  },
+  addAttributes: function addAttributes() {
+    return {
+      type: {
+        "default": null
+      },
+      data: {
+        "default": null
+      }
+    };
+  },
+  parseHTML: function parseHTML() {
+    return [{
+      tag: "filament-block"
+    }];
+  },
+  renderHTML: function renderHTML(_ref) {
+    var node = _ref.node;
+    return ["filament-block", this.options.HTMLAttributes];
+  },
+  addNodeView: function addNodeView() {
+    return function (_ref2) {
+      var editor = _ref2.editor,
+          node = _ref2.node,
+          getPos = _ref2.getPos,
+          HTMLAttributes = _ref2.HTMLAttributes,
+          decorations = _ref2.decorations,
+          extension = _ref2.extension;
+      console.log(node.attrs);
+      var dom = document.createElement("div");
+      dom.classList.add("filament-block");
+      var title = "\n        <div class=\"filament-block-title\">\n            <p>".concat(node.attrs.type, "</p>\n            <button x-on:click=\"$dispatch('open-modal', {\n                id: 'filament-tiptap-editor-block-modal',\n                action: 'edit',\n                type: '").concat(node.attrs.type, "',\n                data: '").concat(encodeURIComponent(JSON.stringify(node.attrs.data)), "'\n            });\">Edit</button>\n        </div>\n      ");
+      dom.innerHTML += title;
+      var data = "";
+      Object.entries(node.attrs.data).map(function (_ref3) {
+        var _ref4 = _slicedToArray(_ref3, 2),
+            key = _ref4[0],
+            value = _ref4[1];
+
+        data += "<dt>".concat(key, "</dt><dd>").concat(value, "</dd>");
+      });
+      var content = "\n        <div class=\"filament-block-content\">\n            <dl>\n                ".concat(data, "\n            </dl>\n        </div>\n      ");
+      dom.innerHTML += content;
+      return {
+        dom: dom
+      };
+    };
+  },
+  addCommands: function addCommands() {
+    var _this = this;
+
+    return {
+      setBlock: function setBlock(attributes) {
+        return function (_ref5) {
+          var tr = _ref5.tr,
+              dispatch = _ref5.dispatch;
+          var selection = tr.selection;
+
+          var node = _this.type.create({
+            type: attributes.data.type,
+            data: attributes.data.attributes
+          });
+
+          if (dispatch) {
+            tr.replaceRangeWith(selection.from, selection.to, node);
+          }
+
+          return true;
+        };
+      }
+    };
+  }
+});
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (FilamentBlock);
+
+/***/ }),
+
 /***/ "./resources/js/extensions/IFrame.js":
 /*!*******************************************!*\
   !*** ./resources/js/extensions/IFrame.js ***!
@@ -15546,6 +15659,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "CustomImage": () => (/* reexport safe */ _Image__WEBPACK_IMPORTED_MODULE_4__.CustomImage),
 /* harmony export */   "CustomLink": () => (/* reexport safe */ _Link__WEBPACK_IMPORTED_MODULE_3__.CustomLink),
 /* harmony export */   "CustomParagraph": () => (/* reexport safe */ _Paragraph__WEBPACK_IMPORTED_MODULE_5__.CustomParagraph),
+/* harmony export */   "FilamentBlock": () => (/* reexport safe */ _FilamentBlock__WEBPACK_IMPORTED_MODULE_6__["default"]),
 /* harmony export */   "IFrame": () => (/* reexport safe */ _IFrame__WEBPACK_IMPORTED_MODULE_2__["default"]),
 /* harmony export */   "Lead": () => (/* reexport safe */ _Lead__WEBPACK_IMPORTED_MODULE_1__["default"])
 /* harmony export */ });
@@ -15555,6 +15669,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Link__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Link */ "./resources/js/extensions/Link.js");
 /* harmony import */ var _Image__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Image */ "./resources/js/extensions/Image.js");
 /* harmony import */ var _Paragraph__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Paragraph */ "./resources/js/extensions/Paragraph.js");
+/* harmony import */ var _FilamentBlock__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./FilamentBlock */ "./resources/js/extensions/FilamentBlock.js");
+
 
 
 
@@ -15735,6 +15851,10 @@ document.addEventListener("alpine:init", function () {
           }));
         }
 
+        if (blocks) {
+          exts.push(_extensions__WEBPACK_IMPORTED_MODULE_27__.FilamentBlock);
+        }
+
         return exts;
       },
       init: function init() {
@@ -15742,6 +15862,7 @@ document.addEventListener("alpine:init", function () {
 
         var _this = this;
 
+        var initialContent = "";
         editors[this.id] = new _tiptap_core__WEBPACK_IMPORTED_MODULE_29__.Editor({
           element: this.$refs.element,
           extensions: this.getExtensions(),
