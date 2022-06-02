@@ -21,9 +21,6 @@ class BlockModal extends Component implements HasForms
 
     public function mount()
     {
-        $defaultBlock = config('filament-tiptap-editor.blocks')[0];
-        $this->currentForm = App::make($defaultBlock)->getName();
-        $this->{$this->currentForm}->fill();
     }
 
     protected function getFormStatePath(): string
@@ -43,27 +40,11 @@ class BlockModal extends Component implements HasForms
         );
     }
 
-    public function getBlock($name): ?Block
-    {
-        return Arr::first(
-            $this->getBlocks(),
-            fn (Block $block) => $block->getName() === $name,
-        );
-    }
-
-    public function getBlocks()
-    {
-        return array_map(function ($block) {
-            return App::make($block);
-        }, config('filament-tiptap-editor.blocks'));
-    }
-
     protected function getForms(): array
     {
         $forms = [];
 
-        foreach (config('filament-tiptap-editor.blocks') as $block) {
-            $block = new $block();
+        foreach ($this->blocks as $block) {
             $forms[$block->getName()] = $this->makeForm()->schema($this->getFormSchema($block));
         }
 
@@ -72,12 +53,13 @@ class BlockModal extends Component implements HasForms
 
     public function setBlock(?string $block)
     {
-        if ($block) {
-            $block = $this->getBlock($block);
-            $this->currentForm = $block->getName();
-            $this->data = null;
-            $this->{$this->currentForm}->fill([]);
-        }
+        ray($this->blocks);
+        // if ($block) {
+        //     $block = $this->getBlock($block);
+        //     $this->currentForm = $block->getName();
+        //     $this->data = null;
+        //     $this->{$this->currentForm}->fill([]);
+        // }
     }
 
     public function editBlock(?string $block, ?string $data)
@@ -110,6 +92,6 @@ class BlockModal extends Component implements HasForms
 
     public function render(): View
     {
-        return view('filament-tiptap-editor::components.block-modal');
+        return view('filament-tiptap-editor::components.block-modal-blocks');
     }
 }

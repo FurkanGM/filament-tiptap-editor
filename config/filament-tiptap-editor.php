@@ -71,15 +71,4 @@ return [
     'image_resize_target_height' => null,
     'media_uploader_id' => 'filament-tiptap-editor-media-uploader-modal', // Default
     // 'media_uploader_id' => 'filament-curator-media-picker', // Filament Curator
-
-    /*
-    |--------------------------------------------------------------------------
-    | Blocks
-    |--------------------------------------------------------------------------
-    */
-
-    'blocks' => [
-        \App\Forms\Tiptap\Blocks\InfographicBlock::class,
-        \App\Forms\Tiptap\Blocks\RandomBlock::class,
-    ]
 ];

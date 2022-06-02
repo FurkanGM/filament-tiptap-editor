@@ -62,7 +62,7 @@
         x-on:click.outside="close($refs.button)"
         :id="$id('dropdown-button')"
         style="display: none;"
-        class="absolute z-30 h-48 overflow-y-scroll text-white bg-gray-900 rounded-md shadow-md top-full"
+        class="absolute z-30 mt-2 overflow-y-scroll text-white bg-gray-900 rounded-md shadow-md max-h-48 top-full"
         style="display: none;">
         <ul class="text-sm divide-y divide-gray-700 min-w-[144px]">
             <li>

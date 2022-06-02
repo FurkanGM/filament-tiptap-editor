@@ -1,18 +1,29 @@
-<div {{ $attributes->merge($getExtraAttributes())->class(['py-8 filament-tiptap-editor-block']) }}>
-    <form wire:submit.prevent="create">
-        {{ $this->form }}
+<div {{ $attributes->merge($getExtraAttributes())->class(['filament-forms-builder-component-block']) }}
+    x-data="{
+        submitBlock(event) {
+            {{-- $wire.set('fieldId', event.detail.fieldId);
+            if (event.detail.action !== 'edit') {
+                $wire.setBlock(event.detail.type);
+            } else {
+                $wire.editBlock(event.detail.type, event.detail.data);
+            }
+            this.$nextTick(() => {
+                if (this.isOpen === true && this.$el.querySelector('input')) {
+                    this.$el.querySelector('input').focus();
+                }
+            }); --}}
+        }
+    }">
 
-        <div class="flex items-center gap-4 pt-3 mt-3 border-t border-gray-300 dark:border-gray-700">
-            <div class="flex items-center gap-2 ml-auto">
-                <x-filament::button type="button"
-                    x-on:click="isOpen = false; $wire.resetForm();"
-                    color="secondary">
-                    {{ __('Cancel') }}
-                </x-filament::button>
-                <x-filament::button type="submit">
-                    {{ __('Insert') }}
-                </x-filament::button>
-            </div>
-        </div>
-    </form>
+    <div @class([
+        'p-4 space-y-2 text-center',
+        'dark:text-white' => config('filament.dark_mode'),
+    ])>
+        <x-filament-support::modal.heading :attributes="\Filament\Support\prepare_inherited_attributes($attributes)"
+            :dark-mode="config('forms.dark_mode')">
+            {{ __('Insert ":label" Block', ['label' => $getLabel()]) }}
+        </x-filament-support::modal.heading>
+    </div>
+
+    <livewire:filament-tiptap-editor-block-form :formSchema="$getChildComponents()" />
 </div>

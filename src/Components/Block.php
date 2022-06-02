@@ -6,33 +6,42 @@ use Closure;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Components\Concerns;
 use Illuminate\Support\Str;
-use ReflectionClass;
 
-class Block
+class Block extends Component
 {
-    protected string $name = '';
+    use Concerns\HasName;
 
     protected string $view = 'filament-tiptap-editor::components.block';
 
     protected string | Closure | null $icon = null;
 
-    public function getName(): string
+    final public function __construct(string $name)
     {
-        return $this->name;
+        $this->name($name);
+    }
+
+    public static function make(string $name): static
+    {
+        return app(static::class, ['name' => $name]);
+    }
+
+    public function icon(string | Closure | null $icon): static
+    {
+        $this->icon = $icon;
+
+        return $this;
+    }
+
+    public function getIcon(): ?string
+    {
+        return $this->evaluate($this->icon);
     }
 
     public function getLabel(): string
     {
-        return (string) Str::of($this->getName())
+        return parent::getLabel() ?? (string) Str::of($this->getName())
             ->kebab()
             ->replace(['-', '_'], ' ')
             ->ucfirst();
-    }
-
-    public function getFields(): array
-    {
-        return array_map(function ($field) {
-            return $field->getName();
-        }, $this->getFormSchema());
     }
 }

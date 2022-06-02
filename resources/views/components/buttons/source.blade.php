@@ -38,3 +38,9 @@
     </svg>
     <span class="sr-only">Source Code</span>
 </button>
+
+@once
+    @push('modals')
+        @livewire('filament-tiptap-editor-source-modal')
+    @endpush
+@endonce

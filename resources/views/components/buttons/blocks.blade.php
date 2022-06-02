@@ -1,3 +1,7 @@
+@props([
+    'fieldId' => null,
+    'blocks' => [],
+])
 <div x-data="{
     open: false,
     toggle() {
@@ -41,6 +45,12 @@
         :aria-expanded="open"
         :aria-controls="$id('dropdown-button')"
         :class="{ 'active': open }"
+        @class([
+            'rounded block p-1 hover:bg-gray-200 focus:bg-gray-200',
+            'dark:hover:bg-gray-800 dark:focus:bg-gray-800' => config(
+                'filament.dark_mode'
+            ),
+        ])
         x-tooltip="'Blocks'">
         <svg xmlns="http://www.w3.org/2000/svg"
             xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -66,17 +76,28 @@
         x-on:click.outside="close($refs.button)"
         :id="$id('dropdown-button')"
         style="display: none;"
-        class="absolute z-30 h-48 overflow-y-scroll text-white bg-gray-900 rounded-md shadow-md top-full"
+        class="absolute z-30 mt-2 overflow-y-scroll text-white bg-gray-900 rounded-md shadow-md max-h-48 top-full"
         style="display: none;">
         <ul class="text-sm divide-y divide-gray-700 min-w-[144px]">
-            @foreach (config('filament-tiptap-editor.blocks') as $block)
-                @php $block = new $block() @endphp
+            @foreach ($blocks as $block)
                 <li>
                     <button type="button"
                         x-on:click="openModal('{{ $block->getName() }}')"
-                        class="block w-full px-3 py-2 text-left whitespace-nowrap hover:bg-primary-500 focus:bg-primary-500 rounded-t-md">{{ (new $block())->getLabel() }}</button>
+                        @class([
+                            'block w-full px-3 py-2 text-left whitespace-nowrap hover:bg-primary-500 focus:bg-primary-500',
+                            'rounded-t-md' => $loop->first,
+                            'rounded-b-md' => $loop->last,
+                        ])>{{ $block->getLabel() }}</button>
                 </li>
             @endforeach
         </ul>
     </div>
 </div>
+@if ($blocks)
+    @once
+        @push('modals')
+            {{-- @livewire('filament-tiptap-editor-block-modal') --}}
+            <x-filament-tiptap-editor::block-modal :blocks="$blocks" />
+        @endpush
+    @endonce
+@endif

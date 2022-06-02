@@ -32,6 +32,8 @@ class TiptapEditor extends Field implements CanBeLengthConstrainedContract
     {
         parent::setUp();
 
+        $this->default([]);
+
         $this->profile = collect(config('filament-tiptap-editor.profiles.default'))->implode(',');
     }
 
@@ -42,11 +44,34 @@ class TiptapEditor extends Field implements CanBeLengthConstrainedContract
         return $this;
     }
 
-    public function blocks(?array $blocks = [])
+    public function getButtons()
     {
-        $this->blocks = $blocks;
+        return $this->profile;
+    }
+
+    public function blocks(array $blocks): static
+    {
+        $this->childComponents($blocks);
 
         return $this;
+    }
+
+    public function getBlock($name): ?Block
+    {
+        return Arr::first(
+            $this->getBlocks(),
+            fn (Block $block) => $block->getName() === $name,
+        );
+    }
+
+    public function getBlocks(): array
+    {
+        return $this->getChildComponentContainer()->getComponents();
+    }
+
+    public function hasBlocks()
+    {
+        return $this->getBlocks() ? 'true' : 'false';
     }
 
     public function saveUploadedFileUsing(?Closure $callback): static
@@ -97,20 +122,5 @@ class TiptapEditor extends Field implements CanBeLengthConstrainedContract
         }
 
         $this->state($state);
-    }
-
-    public function getButtons()
-    {
-        return $this->profile;
-    }
-
-    public function hasBlocks()
-    {
-        return $this->blocks ? 'true' : 'false';
-    }
-
-    public function getBlocks()
-    {
-        return $this->blocks;
     }
 }

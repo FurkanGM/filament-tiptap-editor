@@ -48,3 +48,11 @@
     </svg>
     <span class="sr-only">Media</span>
 </button>
+
+@if (config('filament-tiptap-editor.media_uploader_id') == 'filament-tiptap-editor-media-uploader-modal')
+    @once
+        @push('modals')
+            @livewire('filament-tiptap-editor-media-uploader-modal')
+        @endpush
+    @endonce
+@endif

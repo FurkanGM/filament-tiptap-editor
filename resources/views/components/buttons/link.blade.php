@@ -69,3 +69,9 @@
     </svg>
     <span class="sr-only">Link</span>
 </button>
+
+@once
+    @push('modals')
+        @livewire('filament-tiptap-editor-link-modal')
+    @endpush
+@endonce

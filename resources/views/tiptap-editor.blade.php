@@ -150,7 +150,7 @@
                     </div>
                     <div x-show="blocks"
                         style="display: none;">
-                        <livewire:filament-tiptap-editor-blocks-button fieldId="{{ $getStatePath() }}"
+                        <x-filament-tiptap-editor::buttons.blocks fieldId="{{ $getStatePath() }}"
                             :blocks="$getBlocks()" />
                     </div>
                     <div x-show="buttons.includes('color')"
@@ -181,23 +181,4 @@
                 x-ref="element"></div>
         </div>
     </div>
-
-    @if (config('filament-tiptap-editor.media_uploader_id') == 'filament-tiptap-editor-media-uploader-modal')
-        @once
-            @push('modals')
-                @livewire('filament-tiptap-editor-media-uploader-modal')
-            @endpush
-        @endonce
-    @endif
-
-    @once
-        @push('modals')
-            @livewire('filament-tiptap-editor-link-modal')
-            {{-- @livewire('filament-tiptap-editor-embed-modal') --}}
-            @livewire('filament-tiptap-editor-source-modal')
-            @if ($hasBlocks())
-                @livewire('filament-tiptap-editor-block-modal')
-            @endif
-        @endpush
-    @endonce
 </x-forms::field-wrapper>
