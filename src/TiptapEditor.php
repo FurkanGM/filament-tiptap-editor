@@ -35,6 +35,74 @@ class TiptapEditor extends Field implements CanBeLengthConstrainedContract
         $this->default([]);
 
         $this->profile = collect(config('filament-tiptap-editor.profiles.default'))->implode(',');
+
+        $this->afterStateHydrated(static function (TiptapEditor $component, ?array $state): void {
+            ray($state);
+            $items = collect($state ?? [])
+                ->mapWithKeys(static fn ($itemData) => [(string) Str::uuid() => $itemData])
+                ->toArray();
+
+            $component->state($items);
+        });
+
+        $this->registerListeners([
+            'tiptapeditor::createItem' => [
+                function (TiptapEditor $component, string $statePath, string $block, ?string $afterUuid = null): void {
+                    ray('create item');
+                    if ($statePath !== $component->getStatePath()) {
+                        return;
+                    }
+
+                    $livewire = $component->getLivewire();
+
+                    $newUuid = (string) Str::uuid();
+                    $newItem = [
+                        'type' => $block,
+                        'data' => [],
+                    ];
+
+                    if ($afterUuid) {
+                        $newItems = [];
+
+                        foreach ($component->getState() as $uuid => $item) {
+                            $newItems[$uuid] = $item;
+
+                            if ($uuid === $afterUuid) {
+                                $newItems[$newUuid] = $newItem;
+                            }
+                        }
+
+                        data_set($livewire, $statePath, $newItems);
+                    } else {
+                        data_set($livewire, "{$statePath}.{$newUuid}", $newItem);
+                    }
+
+                    $component->getChildComponentContainers()[$newUuid]->fill();
+
+                    $component->hydrateDefaultItemState($newUuid);
+
+                    $component->collapsed(false, shouldMakeComponentCollapsible: false);
+                },
+            ],
+            'tiptapeditor::deleteItem' => [
+                function (TiptapEditor $component, string $statePath, string $uuidToDelete): void {
+                    if ($component->isItemDeletionDisabled()) {
+                        return;
+                    }
+
+                    if ($statePath !== $component->getStatePath()) {
+                        return;
+                    }
+
+                    $items = $component->getState();
+
+                    unset($items[$uuidToDelete]);
+
+                    $livewire = $component->getLivewire();
+                    data_set($livewire, $statePath, $items);
+                },
+            ],
+        ]);
     }
 
     public function profile(?string $profile)
@@ -67,6 +135,30 @@ class TiptapEditor extends Field implements CanBeLengthConstrainedContract
     public function getBlocks(): array
     {
         return $this->getChildComponentContainer()->getComponents();
+    }
+
+    public function getChildComponentContainers(bool $withHidden = false): array
+    {
+        if (isset($this->getState()['content'])) {
+            return collect($this->getState()['content'])
+                ->filter(fn (array $itemData): bool => $this->hasBlock($itemData['type']))
+                ->map(
+                    fn (array $itemData, $itemIndex): ComponentContainer => $this
+                        ->getBlock($itemData['type'])
+                        ->getChildComponentContainer()
+                        ->getClone()
+                        ->statePath("{$itemIndex}.data")
+                        ->inlineLabel(false),
+                )
+                ->toArray();
+        }
+
+        return [];
+    }
+
+    public function hasBlock($name): bool
+    {
+        return (bool) $this->getBlock($name);
     }
 
     public function hasBlocks()

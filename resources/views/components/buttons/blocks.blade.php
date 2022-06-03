@@ -1,6 +1,7 @@
 @props([
     'fieldId' => null,
     'blocks' => [],
+    'statePath',
 ])
 <div x-data="{
     open: false,
@@ -21,6 +22,7 @@
         focusAfter && focusAfter.focus()
     },
     openModal(type) {
+        console.log($wire.getBlock(type));
         $dispatch('open-modal', {
             id: 'filament-tiptap-editor-block-modal',
             fieldId: '{{ $fieldId }}',
@@ -82,7 +84,8 @@
             @foreach ($blocks as $block)
                 <li>
                     <button type="button"
-                        x-on:click="openModal('{{ $block->getName() }}')"
+                        {{-- x-on:click="openModal('{{ $block->getName() }}')" --}}
+                        wire:click="dispatchFormEvent('tiptapeditor::createItem', '{{ $fieldId }}', '{{ $block->getName() }}')"
                         @class([
                             'block w-full px-3 py-2 text-left whitespace-nowrap hover:bg-primary-500 focus:bg-primary-500',
                             'rounded-t-md' => $loop->first,
@@ -97,7 +100,7 @@
     @once
         @push('modals')
             {{-- @livewire('filament-tiptap-editor-block-modal') --}}
-            <x-filament-tiptap-editor::block-modal :blocks="$blocks" />
+            {{-- <x-filament-tiptap-editor::block-modal :blocks="$blocks" /> --}}
         @endpush
     @endonce
 @endif
