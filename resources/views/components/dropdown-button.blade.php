@@ -2,6 +2,7 @@
     'active' => null,
     'label' => null,
     'icon' => null,
+    'viewbox' => '0 0 24 24',
 ])
 <div x-data="{
     open: false,
@@ -40,8 +41,9 @@
                 'filament.dark_mode'
             ),
         ])>
-        <x-filament-tiptap-editor::icon icon="{{ $icon }}" />
-        <span class="sr-only">{{ $label }}</span>
+        <x-filament-tiptap-editor::icon icon="{{ $icon }}"
+            viewbox="{{ $viewbox }}" />
+        <span class="sr-only ">{{ $label }}</span>
     </button>
 
     <div x-ref="panel"

@@ -1,29 +1,19 @@
-<div {{ $attributes->merge($getExtraAttributes())->class(['filament-forms-builder-component-block']) }}
-    x-data="{
-        submitBlock(event) {
-            {{-- $wire.set('fieldId', event.detail.fieldId);
-            if (event.detail.action !== 'edit') {
-                $wire.setBlock(event.detail.type);
-            } else {
-                $wire.editBlock(event.detail.type, event.detail.data);
-            }
-            this.$nextTick(() => {
-                if (this.isOpen === true && this.$el.querySelector('input')) {
-                    this.$el.querySelector('input').focus();
-                }
-            }); --}}
-        }
-    }">
+<div @class(['filament-tiptap-editor-block'])
+    }}>
 
     <div @class([
-        'p-4 space-y-2 text-center',
-        'dark:text-white' => config('filament.dark_mode'),
+        'filament-block-title bg-gray-200 text-gray-900 rounded-t py-2 px-3 uppercase text-sm flex items-center justify-between',
+        'dark:text-white dark:bg-gray-900' => config('filament.dark_mode'),
     ])>
-        <x-filament-support::modal.heading :attributes="\Filament\Support\prepare_inherited_attributes($attributes)"
-            :dark-mode="config('forms.dark_mode')">
-            {{ __('Insert ":label" Block', ['label' => $getLabel()]) }}
-        </x-filament-support::modal.heading>
+        <h3>{{ $getLabel() }}</h3>
+        <button type="button">Edit</button>
     </div>
 
-    <livewire:filament-tiptap-editor-block-form :formSchema="$getChildComponents()" />
+    <div @class([
+        'bg-gray-100 rounded-b p-4 border-x border-b border-gray-200',
+        'dark:bg-gray-800 dark:border-gray-900' => config('filament.dark_mode'),
+    ])
+        contenteditable="false">
+        {{ $getChildComponentContainer() }}
+    </div>
 </div>

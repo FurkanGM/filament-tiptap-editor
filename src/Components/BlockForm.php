@@ -15,7 +15,7 @@ class BlockForm extends Component implements HasForms
 
     public function mount($formSchema)
     {
-        $this->formSchema = array_values($formSchema);
+        $this->formSchema = $formSchema;
 
         $this->form->fill([]);
     }
@@ -32,16 +32,12 @@ class BlockForm extends Component implements HasForms
 
     public function save()
     {
-        ray('saving block');
         $this->data = null;
         $this->form->fill([]);
     }
 
     public function render()
     {
-        ray($this->formSchema);
-        return view('filament-tiptap-editor::components.block-form', [
-            'formSchema' => array_values($this->formSchema)
-        ]);
+        return view('filament-tiptap-editor::components.block-form');
     }
 }

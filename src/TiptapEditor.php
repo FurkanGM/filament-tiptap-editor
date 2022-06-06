@@ -7,12 +7,13 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Filament\Forms\Components\Field;
 use Filament\Forms\ComponentContainer;
+use FilamentTiptapEditor\Components\Block;
+use FilamentTiptapEditor\Components\BlockForm;
 use Filament\Forms\Components\Concerns\HasPlaceholder;
 use Filament\Support\Concerns\HasExtraAlpineAttributes;
 use Filament\Forms\Components\Concerns\CanBeLengthConstrained;
 use Filament\Forms\Components\Concerns\HasExtraInputAttributes;
 use Filament\Forms\Components\Contracts\CanBeLengthConstrained as CanBeLengthConstrainedContract;
-use FilamentTiptapEditor\Components\Block;
 
 class TiptapEditor extends Field implements CanBeLengthConstrainedContract
 {
@@ -28,6 +29,8 @@ class TiptapEditor extends Field implements CanBeLengthConstrainedContract
 
     public array $blocks = [];
 
+    // public array $blockForms = [];
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -36,52 +39,29 @@ class TiptapEditor extends Field implements CanBeLengthConstrainedContract
 
         $this->profile = collect(config('filament-tiptap-editor.profiles.default'))->implode(',');
 
-        $this->afterStateHydrated(static function (TiptapEditor $component, ?array $state): void {
-            ray($state);
-            $items = collect($state ?? [])
-                ->mapWithKeys(static fn ($itemData) => [(string) Str::uuid() => $itemData])
-                ->toArray();
-
-            $component->state($items);
-        });
-
         $this->registerListeners([
             'tiptapeditor::createItem' => [
-                function (TiptapEditor $component, string $statePath, string $block, ?string $afterUuid = null): void {
-                    ray('create item');
+                function (TiptapEditor $component, string $statePath, string $block): void {
+
                     if ($statePath !== $component->getStatePath()) {
                         return;
                     }
 
                     $livewire = $component->getLivewire();
+                    $block = $this->getBlock($block);
 
-                    $newUuid = (string) Str::uuid();
-                    $newItem = [
-                        'type' => $block,
-                        'data' => [],
-                    ];
+                    $renderedBlock = $block->render();
 
-                    if ($afterUuid) {
-                        $newItems = [];
+                    ray(array_values($block->getChildComponents()));
 
-                        foreach ($component->getState() as $uuid => $item) {
-                            $newItems[$uuid] = $item;
-
-                            if ($uuid === $afterUuid) {
-                                $newItems[$newUuid] = $newItem;
-                            }
-                        }
-
-                        data_set($livewire, $statePath, $newItems);
-                    } else {
-                        data_set($livewire, "{$statePath}.{$newUuid}", $newItem);
-                    }
-
-                    $component->getChildComponentContainers()[$newUuid]->fill();
-
-                    $component->hydrateDefaultItemState($newUuid);
-
-                    $component->collapsed(false, shouldMakeComponentCollapsible: false);
+                    $livewire->dispatchBrowserEvent('insert-block', [
+                        'fieldId' => $statePath,
+                        'attributes' => [
+                            'type' => $block->getName(),
+                            'data' => collect($block->getChildComponents())->mapWithKeys(static fn ($item) => [(string) $item->getName() => '']),
+                            'html' => $renderedBlock->toHTML()
+                        ]
+                    ]);
                 },
             ],
             'tiptapeditor::deleteItem' => [

@@ -1,5 +1,6 @@
 @props([
     'icon' => null,
+    'viewbox' => '0 0 24 24',
 ])
 <svg xmlns="http://www.w3.org/2000/svg"
     xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -9,7 +10,7 @@
     width="24"
     height="24"
     preserveAspectRatio="xMidYMid meet"
-    viewBox="0 0 24 24">
+    viewBox="{{ $viewbox }}">
     @switch($icon)
         @case('align-center')
             <path fill="currentColor"
@@ -27,6 +28,14 @@
             <path fill="currentColor"
                 d="M4 21h16c.55 0 1-.45 1-1s-.45-1-1-1H4c-.55 0-1 .45-1 1s.45 1 1 1zm6-4h10c.55 0 1-.45 1-1s-.45-1-1-1H10c-.55 0-1 .45-1 1s.45 1 1 1zm-6-4h16c.55 0 1-.45 1-1s-.45-1-1-1H4c-.55 0-1 .45-1 1s.45 1 1 1zm6-4h10c.55 0 1-.45 1-1s-.45-1-1-1H10c-.55 0-1 .45-1 1s.45 1 1 1zM3 4c0 .55.45 1 1 1h16c.55 0 1-.45 1-1s-.45-1-1-1H4c-.55 0-1 .45-1 1z">
             </path>
+        @break
+
+        @case('blocks')
+            <path fill="currentColor"
+                d="m31.42 9.09l-13-6a1 1 0 0 0-.84 0l-13 6A1 1 0 0 0 4 10v17a1 1 0 0 0 .58.91l13 6a1 1 0 0 0 .84 0l13-6A1 1 0 0 0 32 27V10a1 1 0 0 0-.58-.91ZM18 5.1L28.61 10L18 14.9L7.39 10ZM6 11.56l11 5.08v14.8L6 26.36Zm13 19.88v-14.8l11-5.08v14.8Z"
+                class="clr-i-outline clr-i-outline-path-1"></path>
+            <path fill="none"
+                d="M0 0h36v36H0z"></path>
         @break
 
         @case('blockquote')
