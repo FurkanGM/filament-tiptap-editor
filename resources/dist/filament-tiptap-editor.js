@@ -15342,7 +15342,7 @@ var FilamentBlock = _tiptap_core__WEBPACK_IMPORTED_MODULE_0__.Node.create({
   },
   addNodeView: function addNodeView() {
     return function (_ref2) {
-      var _node$attrs, _node$attrs2;
+      var _node$attrs;
 
       var editor = _ref2.editor,
           node = _ref2.node,
@@ -15352,12 +15352,13 @@ var FilamentBlock = _tiptap_core__WEBPACK_IMPORTED_MODULE_0__.Node.create({
           extension = _ref2.extension;
       console.log(node.attrs);
       var dom = document.createElement("div");
+      var content = document.createElement("div");
       dom.classList.add("filament-block");
       dom.contentEditable = false;
       dom.innerHTML = (_node$attrs = node.attrs) === null || _node$attrs === void 0 ? void 0 : _node$attrs.html;
       return {
         dom: dom,
-        contentDOM: (_node$attrs2 = node.attrs) === null || _node$attrs2 === void 0 ? void 0 : _node$attrs2.html
+        contentDOM: content
       };
     };
   },
@@ -15826,21 +15827,27 @@ document.addEventListener("alpine:init", function () {
           element: this.$refs.element,
           extensions: this.getExtensions(),
           content: (state === null || state === void 0 ? void 0 : state.initialValue) === "<p></p>" ? "" : state === null || state === void 0 ? void 0 : state.initialValue,
-          onCreate: function onCreate(_ref2) {
+          onFocus: function onFocus(_ref2) {
+            var editor = _ref2.editor;
+            console.log("focus");
+
+            _this.$dispatch("focus");
+          },
+          onCreate: function onCreate(_ref3) {
             var _editor$getJSON;
 
-            var editor = _ref2.editor;
+            var editor = _ref3.editor;
             _this.html = editor.getHTML();
             _this.json = (_editor$getJSON = editor.getJSON()) === null || _editor$getJSON === void 0 ? void 0 : _editor$getJSON.content;
-            _this.state = _this.html = editor.getHTML() === "<p></p>" ? "" : editor.getHTML();
+            _this.state = editor.getJSON();
             _this.$refs.textarea.value = _this.state;
             _this.updatedAt = Date.now();
           },
-          onUpdate: function onUpdate(_ref3) {
+          onUpdate: function onUpdate(_ref4) {
             var _editor$getJSON2;
 
-            var editor = _ref3.editor;
-            _this.state = editor.getHTML();
+            var editor = _ref4.editor;
+            _this.state = editor.getJSON();
             _this.html = editor.getHTML();
             _this.json = (_editor$getJSON2 = editor.getJSON()) === null || _editor$getJSON2 === void 0 ? void 0 : _editor$getJSON2.content;
             _this.$refs.textarea.value = _this.html === "<p></p>" ? "" : _this.html;
@@ -15849,16 +15856,19 @@ document.addEventListener("alpine:init", function () {
 
             _this.updatedAt = Date.now();
           },
-          onSelectionUpdate: function onSelectionUpdate(_ref4) {
-            var editor = _ref4.editor;
+          onSelectionUpdate: function onSelectionUpdate(_ref5) {
+            var editor = _ref5.editor;
             _this.updatedAt = Date.now();
           },
-          onBlur: function onBlur(_ref5) {
-            var editor = _ref5.editor;
+          onBlur: function onBlur(_ref6) {
+            var editor = _ref6.editor;
 
             _this.$refs.textarea.dispatchEvent(new Event("change"));
 
             _this.updatedAt = Date.now();
+            setTimeout(function () {
+              if (!_this.$refs.element.contains(document.activeElement)) _this.$dispatch("blur");
+            }, 1);
           }
         });
         window.filamentTiptapEditors = editors;

@@ -139,15 +139,19 @@ document.addEventListener("alpine:init", () => {
           element: this.$refs.element,
           extensions: this.getExtensions(),
           content: state?.initialValue === "<p></p>" ? "" : state?.initialValue,
+          onFocus({ editor }) {
+            console.log("focus");
+            _this.$dispatch("focus");
+          },
           onCreate({ editor }) {
             _this.html = editor.getHTML();
             _this.json = editor.getJSON()?.content;
-            _this.state = _this.html = editor.getHTML() === "<p></p>" ? "" : editor.getHTML();
+            _this.state = editor.getJSON();
             _this.$refs.textarea.value = _this.state;
             _this.updatedAt = Date.now();
           },
           onUpdate({ editor }) {
-            _this.state = editor.getHTML();
+            _this.state = editor.getJSON();
             _this.html = editor.getHTML();
             _this.json = editor.getJSON()?.content;
             _this.$refs.textarea.value = _this.html === "<p></p>" ? "" : _this.html;
@@ -160,6 +164,9 @@ document.addEventListener("alpine:init", () => {
           onBlur({ editor }) {
             _this.$refs.textarea.dispatchEvent(new Event("change"));
             _this.updatedAt = Date.now();
+            setTimeout(() => {
+              if (!_this.$refs.element.contains(document.activeElement)) _this.$dispatch("blur");
+            }, 1);
           },
         });
 

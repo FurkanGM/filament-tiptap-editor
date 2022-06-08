@@ -59,7 +59,7 @@ class TiptapEditor extends Field implements CanBeLengthConstrainedContract
                         'attributes' => [
                             'type' => $block->getName(),
                             'data' => collect($block->getChildComponents())->mapWithKeys(static fn ($item) => [(string) $item->getName() => '']),
-                            'html' => $renderedBlock->toHTML()
+                            'html' => $this->minify($renderedBlock->toHTML())
                         ]
                     ]);
                 },
@@ -194,5 +194,26 @@ class TiptapEditor extends Field implements CanBeLengthConstrainedContract
         }
 
         $this->state($state);
+    }
+
+    public function minify(string $html): string
+    {
+        $search = array(
+
+            // Remove whitespaces after tags
+            '/\>[^\S ]+/s',
+
+            // Remove whitespaces before tags
+            '/[^\S ]+\</s',
+
+            // Remove multiple whitespace sequences
+            '/(\s)+/s',
+
+            // Removes comments
+            '/<!--(.|\s)*?-->/'
+        );
+        $replace = array('>', '<', '\\1');
+        $html = preg_replace($search, $replace, $html);
+        return $html;
     }
 }

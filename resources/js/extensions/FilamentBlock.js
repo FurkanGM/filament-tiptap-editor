@@ -39,13 +39,14 @@ export const FilamentBlock = Node.create({
     return ({ editor, node, getPos, HTMLAttributes, decorations, extension }) => {
       console.log(node.attrs);
       const dom = document.createElement("div");
+      const content = document.createElement("div");
       dom.classList.add("filament-block");
       dom.contentEditable = false;
       dom.innerHTML = node.attrs?.html;
 
       return {
         dom,
-        contentDOM: node.attrs?.html,
+        contentDOM: content,
       };
     };
   },
